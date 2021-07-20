@@ -1,13 +1,20 @@
 import path from "path";
 import webpack from "webpack";
+import HtmlWebpackPlugin from "html-webpack-plugin";
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
+import ESLintPlugin from "eslint-webpack-plugin";
+
 
 const config = {
+  mode: "development",
+  output: {
+    publicPath: "/",
+  },
   entry: "./src/index.tsx",
   module: {
     rules: [
       {
-        test: /\.(ts|js)x?$/,
+        test: /\.(ts|js)x?$/i,
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
@@ -25,23 +32,26 @@ const config = {
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
   },
-  output: {
-    path: path.resolve(__dirname, "build"),
-    filename: "bundle.js",
-  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: "src/index.html",
+    }),
+    new webpack.HotModuleReplacementPlugin(),
+    new ForkTsCheckerWebpackPlugin({
+      async: false
+    }),
+    new ESLintPlugin({
+      extensions: ["js", "jsx", "ts", "tsx"],
+    })
+  ],
+  devtool: "inline-source-map",
   devServer: {
     contentBase: path.join(__dirname, "build"),
-    compress: true,
+    historyApiFallback: true,
     port: 4000,
-  }, 
-  plugins: [
-    new ForkTsCheckerWebpackPlugin({
-      async: false,
-      eslint: {
-        files: "./src/**/*",
-      },
-    }),
-  ],
+    open: true,
+    hot: true
+  },
 };
 
 export default config;
