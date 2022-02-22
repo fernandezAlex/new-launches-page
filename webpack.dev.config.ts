@@ -4,7 +4,6 @@ import HtmlWebpackPlugin from "html-webpack-plugin";
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
 import ESLintPlugin from "eslint-webpack-plugin";
 
-
 const config = {
   mode: "development",
   output: {
@@ -27,10 +26,22 @@ const config = {
           },
         },
       },
+      {
+        test: /\.(woff(2)?|ttf|jpg|png|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[name].[ext]',
+              outputPath: 'fonts/'
+            }
+          }
+        ]
+      },
     ],
   },
   resolve: {
-    extensions: [".tsx", ".ts", ".js"],
+    extensions: [".tsx", ".ts", ".js",".jsx"],
   },
   plugins: [
     new HtmlWebpackPlugin({
